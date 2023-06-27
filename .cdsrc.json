@@ -1,1 +1,32 @@
-{}
+{
+    "[development]": {
+        "auth": {
+            "passport": {
+                "strategy": "mock",
+                "users": {
+                    "customer1@gmail.com": {
+                        "password": "123",
+                        "ID": "customer1@gmail.com",
+                        "roles": [
+                            "Customer"
+                        ]
+                    },
+                    "customer2@gmail.com": {
+                        "password": "123",
+                        "ID": "customer2@gmail.com",
+                        "roles": [
+                            "Customer"
+                        ]
+                    },
+                    "admin@gmail.com": {
+                        "password": "123",
+                        "ID": "admin@gmail.com",
+                        "roles": [
+                            "Administrator"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
