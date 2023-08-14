@@ -1,0 +1,160 @@
+{
+  "_version": "1.49.0",
+  "sap.app": {
+    "id": "ns.certificates",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:fpm",
+      "version": "1.10.0",
+      "toolsId": "d28a18e5-ca96-43e9-9a2d-a27e76556d9f"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/certificate/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "rootView":{
+      "viewName": "ns.certificates.ext.view.Main",
+      "type": "XML",
+      "async": true
+    },
+    "dependencies": {
+      "minUI5Version": "1.114.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "ns.certificates.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": [
+        {"uri": "css/style.css"}
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "ns.certificates.ext.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "bypassed": {
+          "target": [
+            "notFound"
+          ]
+        },
+        "async": true
+      },
+      "routes": [
+        {
+          "pattern": "",
+          "name": "certificates",
+          "target": [
+            "certificates"
+          ]
+        },
+        {
+          "pattern": "Certificates/{objectId}",
+          "name": "certificateInfo",
+          "target": [
+            "certificateInfo"
+          ]
+        },
+        {
+          "pattern": "Cart",
+          "name": "cart",
+          "target": [
+            "cart"
+          ]
+        }
+      ],
+      "targets": {
+        "certificates": {
+          "viewName": "Certificates",
+          "viewId": "certificates",
+          "viewLevel": 1,
+          "title": "{i18n>certificatesViewTitle}"
+        },
+        "certificateInfo": {
+          "viewName": "CertificateInfo",
+          "viewId": "certificateInfo",
+          "viewLevel": 2,
+          "title": "{i18n>certificateTitle}"
+        },
+        "cart": {
+          "viewName": "Cart",
+          "viewId": "cart",
+          "viewLevel": 2,
+          "title": "{i18n>cartTitle}"
+        },
+        "objectNotFound": {
+          "viewName": "ObjectNotFound",
+          "viewId": "objectNotFound"
+        },
+        "notFound": {
+          "viewName": "NotFound",
+          "viewId": "notFound"
+        }
+      }
+    }
+  }
+}

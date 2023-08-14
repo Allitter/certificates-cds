@@ -1,49 +1,50 @@
-const cds = require('@sap/cds')
+const cds = require('@sap/cds');
+const crypto = require('crypto');
+
 
 module.exports = cds.service.impl(async function () {
     const { Certificates } = cds.entities;
 
     this.before(['UPDATE', 'INSERT'], 'Purchases', async req => {
-        let purchase = req.data
-        purchase.ID = req.ID
-        const tx = cds.tx(req)
+        let purchase = req.data;
+        purchase.ID = crypto.randomUUID();
+        const tx = cds.tx(req);
 
-        purchase.certificates = await countCertificatesCost(purchase.certificates, tx)
-
-        return purchase;
+        purchase.certificates = await countCertificatesCost(purchase.certificates, tx);
     });
 
     async function countCertificatesCost(purchaseCertificates, tx) {
-        purchaseCertificates = flattenPurchaseCertificates(purchaseCertificates)
+        purchaseCertificates = flattenPurchaseCertificates(purchaseCertificates);
 
-        let certificateIDs = purchaseCertificates.map(certificate => certificate.certificate_ID)
-        let certificates = await tx.run(SELECT.from(Certificates).where({ ID: certificateIDs }))
+        let certificateIDs = purchaseCertificates.map(certificate => certificate.certificate_ID);
+        let certificates = await tx.run(SELECT.from(Certificates).where({ ID: certificateIDs }));
 
-        purchaseCertificates.forEach(certificate => {
-            certificates.forEach(cert => {
-                if (cert.ID === certificate.certificate_ID) {
-                    certificate.cost = certificate.count * cert.price
-                }
-            })
-        });
-
-        return purchaseCertificates
+        return countPurchaseCertificateCost(purchaseCertificates, certificates);
     }
 
     function flattenPurchaseCertificates(purchaseCertificates) {
-        let distinctPurchaseCertificates = [];
-        purchaseCertificates = [...purchaseCertificates]
-        for (let i = 0; i < purchaseCertificates.length; i++) {
-            let certificate = { ...purchaseCertificates[i] };
-            distinctPurchaseCertificates.push(certificate)
-            for (let j = i + 1; j < purchaseCertificates.length; j++) {
-                if (certificate.certificate_ID === purchaseCertificates[j].certificate_ID) {
-                    certificate.count += purchaseCertificates[j].count
-                    purchaseCertificates.splice(j, 1)
-                    j--
-                }
+        let certificates = new Map();
+        purchaseCertificates.forEach(certificate => {
+            if (certificates.has(certificate.certificate_ID)) {
+                certificates.get(certificate.certificate_ID).count += certificate.count
+            } else {
+                certificates.set(certificate.certificate_ID, certificate)
             }
-        }
-        return distinctPurchaseCertificates
+        });
+        return Array.from(certificates.values());
+    }
+
+    function countPurchaseCertificateCost(purchaseCertificates, certificates) {
+        purchaseCertificates = purchaseCertificates.map(purchaseCertificate => { return { ...purchaseCertificate } });
+        
+        purchaseCertificates.forEach(purchaseCertificate => {
+            certificates.forEach(certificiate => {
+                if (certificiate.ID === purchaseCertificate.certificate_ID) {
+                    purchaseCertificate.cost = purchaseCertificate.count * certificiate.price;
+                }
+            });
+        });
+
+        return purchaseCertificates;
     }
 })

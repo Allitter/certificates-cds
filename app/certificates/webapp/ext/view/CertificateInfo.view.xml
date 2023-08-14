@@ -1,0 +1,110 @@
+<mvc:View xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns:m="sap.m"
+    xmlns="sap.uxap"
+    xmlns:cards="sap.f.cards"
+    xmlns:semantic="sap.f.semantic"
+    xmlns:grid="sap.ui.layout.cssgrid"
+    xmlns:layout="sap.ui.layout"
+    xmlns:macros="sap.fe.macros"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="ns.certificates.ext.controller.CertificateInfo">
+
+    <ObjectPageLayout showTitleInHeaderContent="true" 
+        showEditHeaderButton="true" 
+        editHeaderButtonPress="handleEditBtnPress" 
+        upperCaseAnchorBar="false">
+        
+        <headerTitle>
+            <ObjectPageDynamicHeaderTitle>
+                <breadcrumbs>
+                    <m:Breadcrumbs id="breadcrumbsId" currentLocationText="{name}">
+                        <m:Link text="Certificates" press="handleLink1Press"/>
+                    </m:Breadcrumbs>
+                </breadcrumbs>
+
+                <expandedHeading>
+                    <m:VBox width="20rem">
+                        <m:VBox>
+                            <m:Title text="{name}" wrapping="true"/>
+                        </m:VBox>
+                        <m:VBox fitContainer="true">
+                            <f:GridList items="{tags}">
+                                <f:customLayout>
+                                    <grid:GridBoxLayout boxWidth="5rem" />
+                                </f:customLayout>
+                                <f:GridListItem >
+                                    <m:Label width="100%" textAlign="Center" text="{name}" />
+                                </f:GridListItem>
+                            </f:GridList>
+                        </m:VBox>
+                    </m:VBox>
+                </expandedHeading>
+
+                <snappedHeading>
+                    <m:VBox width="20rem">
+                        <m:VBox>
+                            <m:Title text="{name}" wrapping="true"/>
+                        </m:VBox>
+                        <m:VBox fitContainer="true">
+                            <f:GridList items="{tags}">
+                                <f:customLayout>
+                                    <grid:GridBoxLayout boxWidth="5rem" />
+                                </f:customLayout>
+                                <f:GridListItem >
+                                    <m:Label text="{name}" />
+                                </f:GridListItem>
+                            </f:GridList>
+                        </m:VBox>
+                    </m:VBox>
+                </snappedHeading>
+
+
+                <actions>
+                    <m:Button 
+                        visible="{= ${cart>certifcates}.has('df2dda5b-0e66-4a78-8c8d-e950ea7a1958')}"
+                        icon="sap-icon://cart" press="onAddToCart" app:ID="{ID}"
+                        text="Add to cart" type="Emphasized" tooltip="pull-down"/>
+                </actions>
+            </ObjectPageDynamicHeaderTitle>
+        </headerTitle>
+
+        <sections>
+            
+            
+            <ObjectPageSection titleUppercase="false" visible="true" title="Description">
+                <heading >
+                </heading>
+                <subSections>
+                    <ObjectPageSubSection >
+                        <blocks >
+                            <m:Text class="largerLabel" text="{description}" />
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+           <ObjectPageSection titleUppercase="false" title="Price">
+                <subSections>
+                    <ObjectPageSubSection >
+                        <blocks>
+                            <m:ObjectNumber class="largeLabel" number="{= ${price} / 100} USD" />
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+            <ObjectPageSection titleUppercase="false" title="Duration">
+                <subSections>
+                    <ObjectPageSubSection >
+                        <blocks>
+                            <m:ObjectNumber class="largeLabel" number="{duration} days" />
+                        </blocks>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+        </sections>
+    </ObjectPageLayout>
+
+</mvc:View>

@@ -2,70 +2,39 @@ using com.certificates as entitites from '../db/schema';
 
 service CertificateService {
     @(restrict: [
-        {
-            grant: 'READ',
-            to   : 'any'
-        },
-        {
-            grant: '*',
-            to   : 'Administrator'
-        }
+        { grant: 'READ', to : 'any' },
+        { grant: '*'   , to : 'Administrator' }
     ])
     entity Certificates         as projection on entitites.Certificates;
 
     @(restrict: [
-        {
-            grant: 'READ',
-            to   : 'any'
-        },
-        {
-            grant: '*',
-            to   : 'Administrator'
-        }
+        { grant: 'READ', to   : 'any' },
+        { grant: '*'   , to   : 'Administrator' }
     ])
     entity Tags                 as projection on entitites.Tags;
 
     @(restrict: [
-        {
-            grant: [
-                'READ',
-                'CREATE',
-                'DELETE'
-            ],
-            to   : 'Customer',
+        { 
+            grant: ['READ', 'CREATE', 'DELETE' ], 
+            to : 'Customer',
             where: 'customer = $user'
         },
-        {
-            grant: '*',
-            to   : 'Administrator'
-        }
+        { grant: '*', to   : 'Administrator' }
     ])
-    entity Purchases            as
-        select from entitites.Purchases {
-            *,
-            sum(
-                certificates.cost
-            ) as cost : Integer
-        }
-        group by
-            ID;
+    entity Purchases as select from entitites.Purchases { 
+            *, 
+            sum(certificates.cost) as cost : Integer
+    } group by ID;
 
     @(restrict: [
-        {
-            grant: [
-                'READ',
-                'CREATE',
-                'DELETE'
-            ],
+        { 
+            grant: [ 'READ', 'CREATE', 'DELETE'],
             to   : 'Customer',
             where: 'customer = $user'
         },
-        {
-            grant: '*',
-            to   : 'Administrator'
-        }
+        { grant: '*', to   : 'Administrator'}
     ])
-    entity PurchaseCertificates as projection on entitites.PurchaseCertificates {
+    entity PurchaseCertificates as projection on entitites.PurchaseCertificates { 
         *,
         certificate.name as certificateName
     };

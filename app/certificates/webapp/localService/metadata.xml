@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.xml">
+        <edmx:Include Alias="Validation" Namespace="Org.OData.Validation.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="CertificateService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Certificates" EntityType="CertificateService.Certificates">
+                    <NavigationPropertyBinding Path="tags" Target="Tags"/>
+                </EntitySet>
+                <EntitySet Name="Tags" EntityType="CertificateService.Tags">
+                    <NavigationPropertyBinding Path="certificate" Target="Certificates"/>
+                </EntitySet>
+                <EntitySet Name="Purchases" EntityType="CertificateService.Purchases">
+                    <NavigationPropertyBinding Path="certificates" Target="PurchaseCertificates"/>
+                </EntitySet>
+                <EntitySet Name="PurchaseCertificates" EntityType="CertificateService.PurchaseCertificates">
+                    <NavigationPropertyBinding Path="certificate" Target="Certificates"/>
+                    <NavigationPropertyBinding Path="purchase" Target="Purchases"/>
+                </EntitySet>
+                <ActionImport Name="Order" Action="CertificateService.Order" EntitySet="Purchases"/>
+            </EntityContainer>
+            <EntityType Name="Certificates">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="description" Type="Edm.String" MaxLength="1024"/>
+                <Property Name="price" Type="Edm.Int32"/>
+                <Property Name="duration" Type="Edm.Int32"/>
+                <NavigationProperty Name="tags" Type="Collection(CertificateService.Tags)" Partner="certificate">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Tags">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="name" Type="Edm.String"/>
+                <NavigationProperty Name="certificate" Type="CertificateService.Certificates" Partner="tags">
+                    <ReferentialConstraint Property="certificate_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="certificate_ID" Type="Edm.Guid"/>
+            </EntityType>
+            <EntityType Name="Purchases">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="customer" Type="Edm.String" MaxLength="255"/>
+                <NavigationProperty Name="certificates" Type="Collection(CertificateService.PurchaseCertificates)" Partner="purchase">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <Property Name="cost" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="PurchaseCertificates">
+                <Key>
+                    <PropertyRef Name="certificate_ID"/>
+                    <PropertyRef Name="purchase_ID"/>
+                </Key>
+                <NavigationProperty Name="certificate" Type="CertificateService.Certificates">
+                    <ReferentialConstraint Property="certificate_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="certificate_ID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="purchase" Type="CertificateService.Purchases" Partner="certificates">
+                    <ReferentialConstraint Property="purchase_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="purchase_ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="count" Type="Edm.Int32"/>
+                <Property Name="cost" Type="Edm.Int32"/>
+                <Property Name="certificateName" Type="Edm.String" MaxLength="255"/>
+            </EntityType>
+            <Action Name="Order" IsBound="false">
+                <Parameter Name="ID" Type="Edm.Int32"/>
+                <Parameter Name="certificates" Type="Collection(CertificateService.PurchaseCertificates)" Nullable="false"/>
+                <ReturnType Type="CertificateService.Purchases"/>
+            </Action>
+            <Annotations Target="CertificateService.Certificates/createdAt">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                </Annotations>
+                <Annotations Target="CertificateService.Certificates/createdBy">
+                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                    <Annotation Term="Core.Immutable" Bool="true"/>
+                    <Annotation Term="Core.Computed" Bool="true"/>
+                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                        </Annotations>
+                        <Annotations Target="CertificateService.Certificates/modifiedAt">
+                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                            <Annotation Term="Core.Computed" Bool="true"/>
+                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                            </Annotations>
+                            <Annotations Target="CertificateService.Certificates/modifiedBy">
+                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                <Annotation Term="Core.Computed" Bool="true"/>
+                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Certificates/name">
+                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Certificates/description">
+                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Certificates/price">
+                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Certificates/duration">
+                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Tags/name">
+                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Tags/certificate_ID">
+                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                    </Annotations>
+                                    <Annotations Target="CertificateService.Purchases/createdAt">
+                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                        </Annotations>
+                                        <Annotations Target="CertificateService.Purchases/createdBy">
+                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                </Annotations>
+                                                <Annotations Target="CertificateService.Purchases/modifiedAt">
+                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                    </Annotations>
+                                                    <Annotations Target="CertificateService.Purchases/modifiedBy">
+                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                            </Annotations>
+                                                            <Annotations Target="CertificateService.Purchases/customer">
+                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                    <Annotation Term="Common.Label" String="{i18n>UserID}"/>
+                                                                    </Annotations>
+                                                                    <Annotations Target="CertificateService.Purchases/cost">
+                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                    </Annotations>
+                                                                    <Annotations Target="CertificateService.PurchaseCertificates/certificate_ID">
+                                                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                                                    </Annotations>
+                                                                    <Annotations Target="CertificateService.PurchaseCertificates/count">
+                                                                        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                                                                        <Annotation Term="Validation.Minimum" Int="1"/>
+                                                                        <Annotation Term="Validation.Maximum" Int="1000"/>
+                                                                    </Annotations>
+                                                                    <Annotations Target="CertificateService.PurchaseCertificates/cost">
+                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                    </Annotations>
+                                                                </Schema>
+                                                            </edmx:DataServices>
+                                                        </edmx:Edmx>

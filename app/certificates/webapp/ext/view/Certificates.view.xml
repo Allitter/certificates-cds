@@ -1,0 +1,65 @@
+<mvc:View xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:cards="sap.f.cards"
+	xmlns:semantic="sap.f.semantic"
+	xmlns:grid="sap.ui.layout.cssgrid"
+	xmlns:macros="sap.fe.macros"
+	xmlns:html="http://www.w3.org/1999/xhtml" 
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	controllerName="ns.certificates.ext.controller.Certificates">
+
+	<Page class="sapUiResponsiveContentPadding" >
+		<headerContent>
+			<mvc:XMLView viewName="ns.certificates.ext.view.ShellBar"/>
+		</headerContent>
+
+		<f:GridList id="gridList" items="{/Certificates}">
+
+			<f:headerToolbar>
+				<Toolbar>
+					<Title id="tableHeader" text="{worklistView>/worklistTableTitle}"/>
+					<ToolbarSpacer />
+					<SearchField id="searchField" 
+						tooltip="{i18n>worklistSearchTooltip}" 
+						search=".onSearch" width="auto">
+					</SearchField>
+				</Toolbar>
+			</f:headerToolbar>
+
+			<f:customLayout>
+				<grid:GridBoxLayout boxWidth="18rem"/>
+			</f:customLayout>
+			<f:GridListItem class="">
+				<VBox height="10rem" class="sapUiSmallMargin">
+					<layoutData>
+						<FlexItemData growFactor="1" shrinkFactor="0" />
+					</layoutData>
+
+					<Title text="{name}" wrapping="true" />
+					<Text text="{description}" maxLines="7" />
+				</VBox>
+				<VBox class="sapUiSmallMargin">
+					<f:GridList items="{tags}" headerText="Tags">
+						<f:customLayout>
+							<grid:GridBoxLayout boxWidth="5rem" />
+						</f:customLayout>
+						<f:GridListItem >
+							<Label class="smallLabel" width="100%" textAlign="Center" text="{name}" />
+						</f:GridListItem>
+					</f:GridList>
+				</VBox>
+				<HBox justifyContent="SpaceBetween" class="equalColumns sapUiSmallMarginBeginEnd">
+					<Title text="Price:"/>
+					<ObjectNumber number="{= ${price} / 100} USD" />
+				</HBox>
+				<HBox justifyContent="Center" class="sapUiSmallMargin nestedFlexboxes">
+					<Button class="sapUiSmallMarginBeginEnd" icon="sap-icon://cart" press=".onViewCart"  />
+					<Button class="sapUiSmallMarginBeginEnd" text="{i18n>viewButtonText}" press=".onViewCertificate" 
+						app:ID="{ID}"/>
+				</HBox>
+			</f:GridListItem>
+		</f:GridList>
+	</Page>
+</mvc:View>

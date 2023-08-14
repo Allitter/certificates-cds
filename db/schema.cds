@@ -2,7 +2,6 @@ namespace com.certificates;
 
 using {
     managed,
-    temporal,
     User,
     cuid
 } from '@sap/cds/common';

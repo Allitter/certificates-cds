@@ -1,0 +1,99 @@
+<mvc:View xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns:m="sap.m"
+    xmlns:table="sap.ui.table"
+    xmlns="sap.uxap"
+    xmlns:main="sap.ui.webc.main"
+    xmlns:u="sap.ui.unified"
+    xmlns:cards="sap.f.cards"
+    xmlns:semantic="sap.f.semantic"
+    xmlns:grid="sap.ui.layout.cssgrid"
+    xmlns:layout="sap.ui.layout"
+    xmlns:macros="sap.fe.macros"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="ns.certificates.ext.controller.Cart">
+
+    <ObjectPageLayout showTitleInHeaderContent="true" showEditHeaderButton="true" editHeaderButtonPress="handleEditBtnPress" upperCaseAnchorBar="false">
+
+        <headerTitle>
+            <ObjectPageDynamicHeaderTitle>
+                <breadcrumbs>
+                    <m:Breadcrumbs id="breadcrumbsId" currentLocationText="{i18n>cartTitle}">
+                        <m:Link text="Certificates" press="handleLink1Press"/>
+                    </m:Breadcrumbs>
+                </breadcrumbs>
+
+                <expandedHeading>
+                    <m:VBox >
+                        <m:Title text="{i18n>cartOrders}" wrapping="true"/>
+                    </m:VBox>
+                </expandedHeading>
+
+                <snappedHeading>
+                    <m:VBox >
+                        <m:Title text="Orders" wrapping="true"/>
+                    </m:VBox>
+                </snappedHeading>
+            </ObjectPageDynamicHeaderTitle>
+        </headerTitle>
+
+        <sections>
+            <ObjectPageSection titleUppercase="false" visible="true" title="Orders">
+                <heading >
+                </heading>
+                <subSections>
+                    <ObjectPageSubSection >
+                        <m:Table itemPress="openPurchaseInfo" app:ID="{ID}" items="{
+                                path: '/Purchases',
+                                templateShareable: false,
+                                sorter: {
+                                    path: 'createdAt',
+                                    order: 'DESC'
+                                }
+                            }">
+                            <m:columns>
+                                <m:Column>
+                                    <main:Label text="ID" />
+                                </m:Column>
+                                <m:Column>
+                                    <main:Label text="Creation time" />
+                                </m:Column>
+                                <m:Column>
+                                    <main:Label text="Certificates" />
+                                </m:Column>
+                                <m:Column>
+                                    <main:Label text="Cost" />
+                                </m:Column>
+                            </m:columns>
+                            <m:items>
+                                <m:ColumnListItem type="Navigation" selected="false">
+                                    <m:cells>
+                                        <main:Label text="{ID}"/>
+                                        <m:Text text="{createdAt}"/>
+                                        <m:VBox fitContainer="true">
+                                            <f:GridList items="{certificates}">
+                                                <f:customLayout>
+                                                    <grid:GridBoxLayout />
+                                                </f:customLayout>
+                                                <f:GridListItem >
+                                                    <m:Link press="onViewCertificate" app:ID="{certificate_ID}"
+                                                        class="sapUiTinyMargin" textAlign="Center" text="name: {certificate/name}" />
+                                                    <m:Label class="sapUiTinyMargin" textAlign="Center" text="count: {count}" />
+                                                    <m:Label class="sapUiTinyMargin" textAlign="Center" text="cost: {cost} USD" />
+                                                </f:GridListItem>
+                                            </f:GridList>
+                                        </m:VBox>
+                                        <main:Label text="{= ${cost}} USD" />
+                                    </m:cells>
+                                </m:ColumnListItem>
+                            </m:items>
+                        </m:Table>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+
+        </sections>
+    </ObjectPageLayout>
+
+</mvc:View>

@@ -7,19 +7,46 @@
   "private": true,
   "dependencies": {
     "@sap/cds": "^6",
-    "express": "^4",
     "@sap/xssec": "^3",
+    "express": "^4",
+    "hdb": "^0.19.0",
     "passport": "^0"
   },
   "devDependencies": {
+    "@sap/ux-specification": "^1.108.8",
+    "rimraf": "^3.0.2",
     "sqlite3": "^5"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "watch-certificate": "cds watch --open certificate/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy certificates-cds --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-certificates": "cds watch --open certificates/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
-      "auth": "xsuaa"
+      "[production]": {
+        "db": {
+          "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "db": {
+        "kind": "sql"
+      },
+      "uaa": {
+        "kind": "xsuaa",
+        "credentials": {}
+      }
     }
-  }
+  },
+  "sapux": [
+    "app/certificate",
+    "app/certificates",
+    "app/certificates"
+  ]
 }

@@ -1,0 +1,1 @@
+using CertificateService as service from '../../srv/certificate-service';
